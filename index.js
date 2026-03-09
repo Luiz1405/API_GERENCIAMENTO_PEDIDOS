@@ -1,6 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 const tratarRotaPedido = require('./routes/orderRoutes');
+const tratarRotaAuth = require('./routes/authRoutes');
 const inicializarBanco = require('./database/init');
 
 const PORTA = process.env.PORT || 3000;
@@ -8,11 +9,16 @@ const PORTA = process.env.PORT || 3000;
 const servidor = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(200);
         res.end();
+        return;
+    }
+
+    if (req.url.startsWith('/auth')) {
+        tratarRotaAuth(req, res);
         return;
     }
 

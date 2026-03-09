@@ -1,13 +1,9 @@
 const { criarPedidoController, buscarPedidoController, listarPedidosController, atualizarPedidoController, deletarPedidoController } = require('../controllers/orderController');
 const { extrairNumeroPedidoDaUrl, isRotaGetPedido, isRotaPostPedido, isRotaListarPedidos, isRotaPutPedido, isRotaPatchPedido, isRotaDeletePedido } = require('../utils/urlParser');
 const { enviarRespostaErro } = require('../utils/responseHandler');
+const { autenticar } = require('../middleware/authMiddleware');
 
 function tratarRotaPedido(req, res) {
-    if (req.method === 'POST' && isRotaPostPedido(req.url)) {
-        criarPedidoController(req, res);
-        return;
-    }
-
     if (req.method === 'GET' && isRotaListarPedidos(req.url)) {
         listarPedidosController(req, res);
         return;
@@ -25,6 +21,13 @@ function tratarRotaPedido(req, res) {
         return;
     }
 
+    if (req.method === 'POST' && isRotaPostPedido(req.url)) {
+        autenticar(req, res, () => {
+            criarPedidoController(req, res);
+        });
+        return;
+    }
+
     if ((req.method === 'PUT' || req.method === 'PATCH') && (isRotaPutPedido(req.url) || isRotaPatchPedido(req.url))) {
         const numeroPedido = extrairNumeroPedidoDaUrl(req.url);
 
@@ -33,7 +36,9 @@ function tratarRotaPedido(req, res) {
             return;
         }
 
-        atualizarPedidoController(req, res, numeroPedido);
+        autenticar(req, res, () => {
+            atualizarPedidoController(req, res, numeroPedido);
+        });
         return;
     }
 
@@ -45,7 +50,9 @@ function tratarRotaPedido(req, res) {
             return;
         }
 
-        deletarPedidoController(req, res, numeroPedido);
+        autenticar(req, res, () => {
+            deletarPedidoController(req, res, numeroPedido);
+        });
         return;
     }
 

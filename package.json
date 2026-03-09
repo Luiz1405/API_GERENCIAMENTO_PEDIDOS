@@ -21,6 +21,8 @@
   "homepage": "https://github.com/Luiz1405/Desafio_Tecnico_Jitterbit#readme",
   "dependencies": {
     "pg": "^8.11.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^5.1.1"
   }
 }
