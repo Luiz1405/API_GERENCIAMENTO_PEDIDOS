@@ -1,6 +1,6 @@
-const { criarPedido } = require('../services/orderService');
+const { criarPedido, buscarPedidoPorNumero } = require('../services/orderService');
 const { validarContentType, validarBodyVazio, validarJSON, isErroValidacao } = require('../utils/requestValidator');
-const { enviarRespostaErro, enviarRespostaSucesso } = require('../utils/responseHandler');
+const { enviarRespostaErro, enviarRespostaSucesso, enviarRespostaDados } = require('../utils/responseHandler');
 
 async function criarPedidoController(req, res) {
     const contentType = req.headers['content-type'];
@@ -49,4 +49,25 @@ async function criarPedidoController(req, res) {
     });
 }
 
-module.exports = { criarPedidoController };
+async function buscarPedidoController(req, res, numeroPedido) {
+    try {
+        const pedido = await buscarPedidoPorNumero(numeroPedido);
+        enviarRespostaDados(res, pedido);
+    } catch (erro) {
+        console.error('Erro ao buscar pedido:', erro);
+
+        if (erro.message === 'Pedido não encontrado') {
+            enviarRespostaErro(res, 404, erro.message);
+            return;
+        }
+
+        if (isErroValidacao(erro)) {
+            enviarRespostaErro(res, 400, erro.message);
+            return;
+        }
+
+        enviarRespostaErro(res, 500, 'Erro ao buscar pedido');
+    }
+}
+
+module.exports = { criarPedidoController, buscarPedidoController };

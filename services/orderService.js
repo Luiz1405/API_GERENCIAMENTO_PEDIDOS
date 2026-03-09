@@ -147,4 +147,16 @@ async function criarPedido(dadosPedido) {
     };
 }
 
-module.exports = { criarPedido };
+async function buscarPedidoPorNumero(numeroPedido) {
+    validarNumeroPedido(numeroPedido);
+
+    const pedido = await orderRepository.buscarPedidoPorNumero(numeroPedido);
+
+    if (!pedido) {
+        throw new Error('Pedido não encontrado');
+    }
+
+    return pedido;
+}
+
+module.exports = { criarPedido, buscarPedidoPorNumero };

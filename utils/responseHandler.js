@@ -11,7 +11,13 @@ function enviarRespostaSucesso(res, numeroPedido) {
     }));
 }
 
+function enviarRespostaDados(res, dados) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(dados));
+}
+
 module.exports = {
     enviarRespostaErro,
-    enviarRespostaSucesso
+    enviarRespostaSucesso,
+    enviarRespostaDados
 };
