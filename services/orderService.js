@@ -62,7 +62,7 @@ function validarDataCriacao(dataCriacao) {
     }
 
     if (!isDataValida(dataCriacao)) {
-        throw new Error('Campo dataCriacao deve ser uma data válida no formato ISO 8601');
+        throw new Error('Campo dataCriacao deve ser uma data válida ano/mes/dia');
     }
 }
 
@@ -154,7 +154,7 @@ function validarDataCriacaoOpcional(dataCriacao) {
     }
 
     if (!isDataValida(dataCriacao)) {
-        throw new Error('Campo dataCriacao deve ser uma data válida ano/mes/dia');
+        throw new Error('Campo dataCriacao deve ser uma data válida no formato ano/mes/dia');
     }
 }
 
@@ -245,4 +245,24 @@ async function atualizarPedido(numeroPedido, dadosPedido) {
     };
 }
 
-module.exports = { criarPedido, buscarPedidoPorNumero, listarTodosPedidos, atualizarPedido };
+async function deletarPedido(numeroPedido) {
+    validarNumeroPedido(numeroPedido);
+
+    const pedidoExiste = await orderRepository.buscarPedidoPorNumero(numeroPedido);
+    if (!pedidoExiste) {
+        throw new Error('Pedido não encontrado');
+    }
+
+    const resultado = await orderRepository.deletarPedido(numeroPedido);
+
+    if (!resultado) {
+        throw new Error('Erro ao deletar pedido');
+    }
+
+    return {
+        sucesso: true,
+        numeroPedido: numeroPedido
+    };
+}
+
+module.exports = { criarPedido, buscarPedidoPorNumero, listarTodosPedidos, atualizarPedido, deletarPedido };

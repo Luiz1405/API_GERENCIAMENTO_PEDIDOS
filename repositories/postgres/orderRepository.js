@@ -247,6 +247,38 @@ class PostgresOrderRepository extends OrderRepositoryInterface {
             cliente.release();
         }
     }
+
+    async deletarPedido(numeroPedido) {
+        const cliente = await pool.connect();
+
+        try {
+            await cliente.query('BEGIN');
+
+            const queryDeletarPedido = `
+                DELETE FROM "Order"
+                WHERE "orderId" = $1
+            `;
+
+            const resultado = await cliente.query(queryDeletarPedido, [numeroPedido]);
+
+            if (resultado.rowCount === 0) {
+                await cliente.query('ROLLBACK');
+                return null;
+            }
+
+            await cliente.query('COMMIT');
+            return {
+                sucesso: true,
+                numeroPedido: numeroPedido
+            };
+
+        } catch (erro) {
+            await cliente.query('ROLLBACK');
+            throw erro;
+        } finally {
+            cliente.release();
+        }
+    }
 }
 
 module.exports = PostgresOrderRepository;

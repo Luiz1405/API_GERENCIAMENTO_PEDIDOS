@@ -26,11 +26,16 @@ function isRotaPatchPedido(url) {
     return /^\/order\/.+$/.test(url) && url !== '/order/list';
 }
 
+function isRotaDeletePedido(url) {
+    return /^\/order\/.+$/.test(url) && url !== '/order/list';
+}
+
 module.exports = {
     extrairNumeroPedidoDaUrl,
     isRotaGetPedido,
     isRotaPostPedido,
     isRotaListarPedidos,
     isRotaPutPedido,
-    isRotaPatchPedido
+    isRotaPatchPedido,
+    isRotaDeletePedido
 };

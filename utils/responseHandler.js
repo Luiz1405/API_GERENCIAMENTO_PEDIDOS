@@ -24,9 +24,18 @@ function enviarRespostaAtualizado(res, numeroPedido) {
     }));
 }
 
+function enviarRespostaDeletado(res, numeroPedido) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+        mensagem: 'Pedido deletado com sucesso',
+        numeroPedido: numeroPedido
+    }));
+}
+
 module.exports = {
     enviarRespostaErro,
     enviarRespostaSucesso,
     enviarRespostaDados,
-    enviarRespostaAtualizado
+    enviarRespostaAtualizado,
+    enviarRespostaDeletado
 };

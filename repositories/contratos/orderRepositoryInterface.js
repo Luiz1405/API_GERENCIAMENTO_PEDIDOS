@@ -22,6 +22,10 @@ class OrderRepositoryInterface {
   async atualizarItems(numeroPedido, items) {
     throw new Error('Método atualizarItems deve ser implementado');
   }
+
+  async deletarPedido(numeroPedido) {
+    throw new Error('Método deletarPedido deve ser implementado');
+  }
 }
 
 module.exports = OrderRepositoryInterface;

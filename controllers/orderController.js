@@ -1,6 +1,6 @@
-const { criarPedido, buscarPedidoPorNumero, listarTodosPedidos, atualizarPedido } = require('../services/orderService');
+const { criarPedido, buscarPedidoPorNumero, listarTodosPedidos, atualizarPedido, deletarPedido } = require('../services/orderService');
 const { validarContentType, validarBodyVazio, validarJSON, isErroValidacao } = require('../utils/requestValidator');
-const { enviarRespostaErro, enviarRespostaSucesso, enviarRespostaDados, enviarRespostaAtualizado } = require('../utils/responseHandler');
+const { enviarRespostaErro, enviarRespostaSucesso, enviarRespostaDados, enviarRespostaAtualizado, enviarRespostaDeletado } = require('../utils/responseHandler');
 
 async function criarPedidoController(req, res) {
     const contentType = req.headers['content-type'];
@@ -132,4 +132,25 @@ async function atualizarPedidoController(req, res, numeroPedido) {
     });
 }
 
-module.exports = { criarPedidoController, buscarPedidoController, listarPedidosController, atualizarPedidoController };
+async function deletarPedidoController(req, res, numeroPedido) {
+    try {
+        const resultado = await deletarPedido(numeroPedido);
+        enviarRespostaDeletado(res, resultado.numeroPedido);
+    } catch (erro) {
+        console.error('Erro ao deletar pedido:', erro);
+
+        if (erro.message === 'Pedido não encontrado') {
+            enviarRespostaErro(res, 404, erro.message);
+            return;
+        }
+
+        if (isErroValidacao(erro)) {
+            enviarRespostaErro(res, 400, erro.message);
+            return;
+        }
+
+        enviarRespostaErro(res, 500, 'Erro ao deletar pedido');
+    }
+}
+
+module.exports = { criarPedidoController, buscarPedidoController, listarPedidosController, atualizarPedidoController, deletarPedidoController };
